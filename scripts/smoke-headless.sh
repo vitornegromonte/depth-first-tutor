@@ -1,14 +1,16 @@
 #!/usr/bin/env bash
 # One-turn smoke test. Loads the plugin in a throwaway folder, invokes the skill headlessly and checks
 # that the first turn fetches a source, creates a tree file and asks for the K/U/N marks.
-# Uses your Claude Code login and spends usage (one short session).
+# Uses your Claude Code login and spends usage (one short session). Run `claude auth status` first.
 set -euo pipefail
 
 root="$(cd "$(dirname "$0")/.." && pwd)"
 plugin="$root/plugins/depth-first-tutor"
 work="$(mktemp -d)"
 cd "$work"
+echo "workdir: $work"
 
+status=0
 claude -p \
   --setting-sources project \
   --plugin-dir "$plugin" \
@@ -16,10 +18,13 @@ claude -p \
   --allowedTools "Read,Write,Edit,Glob,Grep,WebSearch,WebFetch" \
   --max-turns 25 \
   --output-format stream-json --verbose \
-  "/depth-first-tutor:learn binary search" > transcript.jsonl
+  "/depth-first-tutor:learn binary search" > transcript.jsonl || status=$?
+if [ "$status" -ne 0 ]; then
+  echo "FAIL claude -p exited with status $status (read transcript.jsonl; check \`claude auth status\`)"
+fi
 
-echo "workdir: $work"
-python3 - "$work" <<'PY'
+checks=0
+python3 - "$work" <<'PY' || checks=$?
 import json
 import re
 import sys
@@ -64,3 +69,4 @@ report("reply asks for the (K)/(U)/(N) marks", all(m in reply for m in ("(K)", "
 report("reply renders the tree", "├──" in reply or "└──" in reply, reply[:300])
 sys.exit(0 if ok else 1)
 PY
+[ "$status" -eq 0 ] && [ "$checks" -eq 0 ]
