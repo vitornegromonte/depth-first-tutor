@@ -28,7 +28,7 @@ NODE = re.compile(
     r" (?P<rest>\S.*)$"
 )
 DATE = re.compile(r"\(\d{4}-\d{2}-\d{2}\)")
-LINK = re.compile(r"\]\(([^)#\s]+)\)")
+LINK = re.compile(r'\]\(\s*([^)\s]*)(?:\s+"[^"]*")?\s*\)')
 
 results = []
 
@@ -41,6 +41,22 @@ def check(name, ok, detail=""):
 
 def read(path):
     return path.read_text(encoding="utf-8") if path.is_file() else None
+
+
+def check_forbidden(text):
+    """Check for leftovers from private version. Returns list of matched entries."""
+    hits = []
+    text_lower = text.lower()
+    # Word boundary matches for "lucas" and "vault"
+    if re.search(r'\blucas\b', text_lower):
+        hits.append("lucas")
+    if re.search(r'\bvault\b', text_lower):
+        hits.append("vault")
+    # Substring matches for the rest
+    for word in ["wiki/", "mcp__", "show_widget", "senduserfile", "$arguments"]:
+        if word.lower() in text_lower:
+            hits.append(word)
+    return hits
 
 
 def load_json(path, name):
@@ -109,7 +125,7 @@ def check_skill_files():
     for path in sorted(SKILL_DIR.rglob("*.md")) if SKILL_DIR.is_dir() else []:
         text = path.read_text(encoding="utf-8")
         rel = path.relative_to(SKILL_DIR)
-        hits = [w for w in FORBIDDEN if w in text.lower()]
+        hits = check_forbidden(text)
         check(f"{rel}: no leftovers from the private version", not hits, ", ".join(hits))
         check(f"{rel}: no checkbox syntax", CHECKBOX.search(text) is None)
         pt = sorted(set(PORTUGUESE.findall(text)))
@@ -119,7 +135,7 @@ def check_skill_files():
     readme_path = ROOT / "README.md"
     if readme_path.is_file():
         text = readme_path.read_text(encoding="utf-8")
-        hits = [w for w in FORBIDDEN if w in text.lower()]
+        hits = check_forbidden(text)
         check("README.md: no leftovers from the private version", not hits, ", ".join(hits))
         pt = sorted(set(PORTUGUESE.findall(text)))
         check("README.md: English only", not pt, ", ".join(pt))
@@ -128,7 +144,7 @@ def check_skill_files():
     for path in sorted((ROOT / "examples").glob("*.md")) if (ROOT / "examples").is_dir() else []:
         text = path.read_text(encoding="utf-8")
         rel = path.relative_to(ROOT)
-        hits = [w for w in FORBIDDEN if w in text.lower()]
+        hits = check_forbidden(text)
         check(f"{rel}: no leftovers from the private version", not hits, ", ".join(hits))
         pt = sorted(set(PORTUGUESE.findall(text)))
         check(f"{rel}: English only", not pt, ", ".join(pt))
@@ -143,8 +159,8 @@ def check_skill_frontmatter():
     if fm is None:
         return
     fm = fm.group(1)
-    name = re.search(r"^name:\s*['\"]?(\S+?)['\"]?\s*$", fm, re.MULTILINE)
-    name = name.group(1) if name else ""
+    name = re.search(r'^name:[ \t]*(?:"([^"\s]+)"|\'([^\'\s]+)\'|([^\s"\']+))[ \t]*$', fm, re.MULTILINE)
+    name = next((g for g in name.groups() if g is not None), "") if name else ""
     check("name matches its folder and the spec",
           name == SKILL_DIR.name and re.fullmatch(r"[a-z0-9]+(-[a-z0-9]+)*", name) and len(name) <= 64, name)
     desc = re.search(r'^description:\s*"(.*)"\s*$', fm, re.MULTILINE)
