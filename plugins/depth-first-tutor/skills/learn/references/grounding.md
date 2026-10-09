@@ -10,6 +10,16 @@ distractor.
 Find and read a reliable source first. If the topic is covered by a source already in the tree's
 `Sources:`, reuse it instead of searching again.
 
+## How much to read
+
+Ground the topic, not every sentence. At the start, pick one or two reliable sources that cover the
+whole goal (an official document, a textbook chapter, the standard) and read the parts you need.
+Reuse them for every node they cover. Look something up again only when a node goes beyond them, or
+to check a precise claim: a number, a version, a formula, a definition, or wording an exam will test.
+Don't fetch again what you already read in this session, and keep it to one or two lookups per turn
+unless the learner asks to go deeper. In exam preparation, or when the learner brought their own
+material, check every claim the exam could test against that material.
+
 **Counts as a source:** official documentation, an established textbook in the field, a
 standard or law in its official text, a peer-reviewed paper, official exam or course material.
 

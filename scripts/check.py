@@ -197,7 +197,8 @@ def check_trees():
         deferred = [m["rest"] for m in nodes if m["state"] == "DEFERRED" and "— reason:" not in m["rest"]]
         check(f"{rel}: DEFERRED nodes carry a reason", not deferred, deferred[0] if deferred else "")
         aliases = set(re.findall(r"— alias: ([a-z0-9-]+)", tree))
-        depends = set(re.findall(r"— depends: ([a-z0-9-]+)", tree))
+        depends = {alias for group in re.findall(r"— depends: ([a-z0-9-]+(?:, [a-z0-9-]+)*)", tree)
+                   for alias in group.split(", ")}
         check(f"{rel}: every depends: has an alias", depends <= aliases, ", ".join(sorted(depends - aliases)))
         depths = [len(m["indent"]) // 4 for m in nodes]
         check(f"{rel}: indentation grows one level at a time",

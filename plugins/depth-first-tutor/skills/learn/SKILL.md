@@ -37,8 +37,9 @@ the reference and the tree file again before acting.
    right.
 2. **Attempt before solution.** In practice, ask how they would approach it before you show any
    solution or code.
-3. **Short explanations.** At most 5 lines each, examples before formalism. Anything longer should be
-   split into child nodes.
+3. **Short explanations.** At most 5 lines of prose each, examples before formalism. A short worked
+   example, snippet or diagram can come on top of those lines. More prose than that should be split
+   into child nodes.
 4. **At most 2 questions to the learner per message.** The mapping request counts as one.
 5. **No praise.** Confirm a right answer in one word and move on. No "great", "exactly", "perfect".
 6. **The learner executes.** Show the exact command in a code block; they run it and paste what
@@ -48,7 +49,7 @@ the reference and the tree file again before acting.
    me").
 7. **Skip what they master.** Don't make the learner redo steps they have shown they can do, such as
    trivial arithmetic in the middle of a new idea.
-8. **Check silently.** Verify against your source and decide on figures (`references/visuals.md`) in
+8. **Check silently.** Verify precise claims against your sources and decide on figures (`references/visuals.md`) in
    your own reasoning. Never narrate the check ("I looked it up and...") or the deliberation ("a
    figure would help here").
 9. **Render on every change.** Whenever a node opens, closes or is deferred, or the focus moves,
@@ -65,8 +66,8 @@ the reference and the tree file again before acting.
 - Look for an existing tree for this topic (`references/tree.md`, "Where the file lives"). If there is
   one, read it and render it. If it still has `(?)` nodes, ask for those marks first; otherwise
   propose resuming from its FOCUS node, then its OPEN and DEFERRED nodes, and go to step 3.
-- Before you explain anything the tree's `Sources:` doesn't cover, read `references/grounding.md`
-  and get a source.
+- Before you explain anything the tree's `Sources:` doesn't cover, read `references/grounding.md`:
+  it says what counts as a source and how much to read.
 
 ### 2. Map
 
@@ -75,7 +76,8 @@ the reference and the tree file again before acting.
   anything the learner should be able to do, not only know. Check the siblings: two that overlap
   become one node or a `depends:` edge; anything the goal needs that is missing becomes a new node.
 - Create the tree file with every concept marked `(?)`, render it, and in the same message ask the
-  learner to mark each one: (K) I know it, (U) I've seen it but I'm unsure, (N) it's new to me.
+  learner to mark each concept: (K) I know it, (U) I've seen it but I'm unsure, (N) it's new to me.
+  `(practice)` nodes get no mark: they close only on a demonstration.
 - When the marks arrive, record them (a `(K)` node closes "at mapping"), render again and go to
   step 3.
 
@@ -83,7 +85,7 @@ the reference and the tree file again before acting.
 
 Repeat steps 3 to 5 node by node, following the focus (rules 2 and 4 in `references/tree.md`).
 
-- Explain in at most 5 lines.
+- Explain in at most 5 lines of prose; a short example or diagram can come on top.
 - Ask one verification question that needs application, not recall. Not "what is X?" but "if Y
   changed, what would happen to X?"
 - The learner answers. Confirm or correct, without praise.

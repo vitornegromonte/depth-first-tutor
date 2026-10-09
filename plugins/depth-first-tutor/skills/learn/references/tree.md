@@ -49,7 +49,7 @@ Each source is a full reference or link, then `·` and what it supports. A tree 
 
 One line per node:
 
-    - [STATE] (type) (mark) question → answer (date) — alias: name — depends: name — reason: why
+    - [STATE] (type) (mark) question → answer (date) — alias: name — depends: name, name — reason: why
 
 - **Indentation**: 4 spaces per level, showing where the question came up.
 - **STATE**: `OPEN` (no answer yet) · `FOCUS` (being worked on now; at most one per tree) · `CLOSED`
@@ -60,13 +60,15 @@ One line per node:
   did, not what they explained · `(decision)` is a choice with a real trade-off, which closes with the
   option chosen and why · `(black-box)` is a node closed by the stop rule.
 - **mark**, optional: the learner's mapping mark: `(K)` know it, `(U)` seen it but unsure, `(N)` new.
-  `(?)` is a mapping node the learner hasn't marked yet; nodes created later, by rule 2, carry no
+  `(?)` is a mapping node the learner hasn't marked yet. `(practice)` nodes never carry a mark (they
+  close only on a demonstration), and nodes created later, by rule 2, carry no
   mark. A `(K)` node enters already CLOSED with the answer "(K) at mapping", so reopening the topic
   needs no new mapping.
 - **→ answer (date)**: one line, in the learner's words when possible. Short notes on attempts may
   follow, separated by `;`.
 - **alias**: a short kebab-case name, only on nodes that another node depends on.
-- **depends**: a prerequisite that is not the parent. Indentation records how the question was
+- **depends**: prerequisites that are not the parent, as aliases separated by commas
+  (`— depends: probing, comparison`). Indentation records how the question was
   discovered; `depends:` records the real prerequisite. The graph is a DAG: never move a node to fix
   the hierarchy, add the edge instead.
 - **reason**: why a node is DEFERRED.
@@ -130,7 +132,7 @@ once, after the last one.
   follows the type when there is one.
 - Answers are not shown; they stay in the file.
 - `■` replaces `✅` for a node closed as black-box. A deferred node shows its reason in a word or two.
-  `depends:` shows as `⇠ <alias>`. The focus ends with `← here`.
+  `depends:` shows as `⇠ <alias>, <alias>`. The focus ends with `← here`.
 - A closed node whose whole subtree is closed collapses into one line: `✅ <question>  (+3 closed)`.
 - With no sources, the second line reads `Sources: ⚠️ ungrounded`.
 - When a node closes and the focus moves up, the render comes first and the full parent second.
