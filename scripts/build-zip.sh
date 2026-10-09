@@ -1,32 +1,38 @@
 #!/usr/bin/env bash
-# Builds dist/learn.zip for claude.ai. The archive's top level must be the learn/ skill folder:
-# claude.ai looks for <skill-name>/SKILL.md inside the zip. LICENSE and NOTICE are copied into it,
-# because the zip is a redistribution and Apache-2.0 requires the License to travel with it.
+# Builds dist/learn.zip for claude.ai from the committed skill (git HEAD), so uncommitted edits never
+# ship. The archive's top level must be the learn/ skill folder: claude.ai looks for
+# <skill-name>/SKILL.md inside the zip. LICENSE and NOTICE are copied into it, because the zip is a
+# redistribution and Apache-2.0 requires the License to travel with it.
 set -euo pipefail
 
 root="$(cd "$(dirname "$0")/.." && pwd)"
-skills="$root/plugins/depth-first-tutor/skills"
 out="$root/dist/learn.zip"
+rm -f "$out"
 stage="$(mktemp -d)"
 trap 'rm -rf "$stage"' EXIT
 
-cp -R "$skills/learn" "$stage/learn"
-cp "$root/LICENSE" "$root/NOTICE" "$stage/learn/"
+git -C "$root" archive HEAD plugins/depth-first-tutor/skills/learn LICENSE NOTICE | tar -x -f - -C "$stage"
+mv "$stage/plugins/depth-first-tutor/skills/learn" "$stage/learn"
+mv "$stage/LICENSE" "$stage/NOTICE" "$stage/learn/"
+(cd "$stage" && zip -qr "$stage/learn.zip" learn -x '*.DS_Store')
 
-mkdir -p "$root/dist"
-rm -f "$out"
-(cd "$stage" && zip -qr "$out" learn -x '*.DS_Store')
-
-listing="$(unzip -Z1 "$out")"
-if grep -qv '^learn/' <<<"$listing"; then
-  echo "FAIL: an entry is outside learn/" >&2
+expected="learn/
+learn/LICENSE
+learn/NOTICE
+learn/SKILL.md
+learn/references/
+learn/references/code-practice.md
+learn/references/grounding.md
+learn/references/tree.md
+learn/references/visuals.md"
+listing="$(unzip -Z1 "$stage/learn.zip" | LC_ALL=C sort)"
+if [ "$listing" != "$expected" ]; then
+  echo "FAIL: the zip does not hold exactly the expected files" >&2
+  diff <(echo "$expected") <(echo "$listing") >&2 || true
   exit 1
 fi
-for f in learn/SKILL.md learn/LICENSE learn/NOTICE; do
-  if ! grep -qx "$f" <<<"$listing"; then
-    echo "FAIL: $f is missing" >&2
-    exit 1
-  fi
-done
+
+mkdir -p "$root/dist"
+mv "$stage/learn.zip" "$out"
 echo "OK: $out"
 echo "$listing"
