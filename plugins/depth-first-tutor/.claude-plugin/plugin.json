@@ -1,0 +1,13 @@
+{
+  "name": "depth-first-tutor",
+  "version": "0.1.0",
+  "description": "Tutor mode for Claude: maps what you already know, explores prerequisites depth-first as a tree of questions saved to a file and redrawn on every change, reads a reliable source before teaching, and leaves TODO(human) spots in code for you to write.",
+  "author": {
+    "name": "Lucas Carvalho",
+    "url": "https://github.com/lucasddmc"
+  },
+  "homepage": "https://github.com/lucasddmc/depth-first-tutor",
+  "repository": "https://github.com/lucasddmc/depth-first-tutor",
+  "license": "Apache-2.0",
+  "keywords": ["learning", "tutor", "socratic", "education", "study"]
+}

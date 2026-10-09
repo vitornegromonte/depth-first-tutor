@@ -1,0 +1,14 @@
+{
+  "name": "depth-first-tutor",
+  "description": "A Socratic tutor mode for Claude that explores a topic depth-first as a tree of questions.",
+  "owner": {
+    "name": "Lucas Carvalho"
+  },
+  "plugins": [
+    {
+      "name": "depth-first-tutor",
+      "source": "./plugins/depth-first-tutor",
+      "description": "Tutor mode: maps what you know, explores prerequisites depth-first as a tree of questions saved to a file, reads a source before teaching, and leaves TODO(human) spots in code for you to write."
+    }
+  ]
+}

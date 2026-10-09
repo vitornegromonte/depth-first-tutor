@@ -1,0 +1,11 @@
+depth-first-tutor
+Copyright 2026 Lucas Carvalho
+
+This product includes material adapted from the "learning-output-style" plugin
+by Anthropic (https://github.com/anthropics/claude-plugins-official/tree/main/plugins/learning-output-style),
+licensed under the Apache License, Version 2.0.
+
+The adapted material is in plugins/depth-first-tutor/skills/learn/references/code-practice.md.
+It was modified: code contributions are requested only inside a tutoring session, for
+practice steps whose approach the learner already got right, and Insight blocks are used
+only as feedback after the learner's attempt.
