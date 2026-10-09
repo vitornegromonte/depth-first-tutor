@@ -19,7 +19,7 @@ form), or a figure that would only decorate and repeat the text next to it.
 
 ## How
 
-Use the best mechanism your environment has, in this order:
+Use what your environment can show:
 
 1. **A diagram you generate:** SVG or a rendered artifact, where the interface can show it. You
    control the framing, you use the session's own notation, and there are no licensing issues.

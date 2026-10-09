@@ -3,20 +3,25 @@
 Every tutoring session keeps a tree in a file, even when the session looks too short to need one.
 The file survives breaks between sessions and a compacted conversation; the chat history doesn't.
 
-The design borrows from IBIS (the elements are questions, and new questions come up while treating
-earlier ones), Knowledge Space Theory (prerequisites form a partial order, so the real structure is a
-DAG) and QOC (decisions recorded with their options and the reason for the choice).
+The design borrows from IBIS (issues, phrased as questions, organize the work, and new issues come up
+while treating earlier ones), Knowledge Space Theory (prerequisites form a partial order, so the real
+structure is a DAG) and QOC (decisions recorded with their options and the criteria behind the
+choice).
 
 ## Where the file lives
 
-1. If the user's CLAUDE.md or AGENTS.md has a line like `depth-first-tutor trees: <path>`, use that
+1. If the learner attached a tree file, that file is the tree: resume from it and keep updating it.
+2. If the user's CLAUDE.md or AGENTS.md has a line like `depth-first-tutor trees: <path>`, use that
    folder.
-2. Otherwise use `learning-trees/` in the current working directory.
-3. One file per topic, named `<topic-slug>.md` in kebab-case (`binary-search.md`).
-4. To resume, list the folder and look for the same slug or a file whose `Goal:` asks the same thing.
+3. Otherwise use `learning-trees/` in the current working directory.
+4. One file per topic, named `<topic-slug>.md` in kebab-case (`binary-search.md`).
+5. To resume, list the folder and look for the same slug or a file whose `Goal:` asks the same thing.
    If you're not sure which file it is, ask.
-5. If you can't write files, keep the tree in the conversation: the latest render is its state, and at
-   the end you give the learner the full file content to save.
+6. If files don't outlive the conversation where you run (a chat sandbox, for example), keep the file
+   there and offer it for download at the end of the session and whenever the learner stops. Tell
+   them to attach it next time to resume.
+7. If you can't write files at all, keep the tree in the conversation: the latest render is its state,
+   and at the end you give the learner the full file content to save.
 
 ## File format
 
@@ -54,9 +59,10 @@ One line per node:
   `(practice)` is a skill, which closes with a demonstration, and the node records what the learner
   did, not what they explained · `(decision)` is a choice with a real trade-off, which closes with the
   option chosen and why · `(black-box)` is a node closed by the stop rule.
-- **mark**, optional: the learner's mapping mark `(K)`, `(U)` or `(N)`, or `(?)` while unmarked. A
-  `(K)` node enters already CLOSED with the answer "(K) at mapping", so reopening the topic needs no
-  new mapping.
+- **mark**, optional: the learner's mapping mark: `(K)` know it, `(U)` seen it but unsure, `(N)` new.
+  `(?)` is a mapping node the learner hasn't marked yet; nodes created later, by rule 2, carry no
+  mark. A `(K)` node enters already CLOSED with the answer "(K) at mapping", so reopening the topic
+  needs no new mapping.
 - **→ answer (date)**: one line, in the learner's words when possible. Short notes on attempts may
   follow, separated by `;`.
 - **alias**: a short kebab-case name, only on nodes that another node depends on.
@@ -68,18 +74,26 @@ One line per node:
   amplitudes, not 2?" closes when the answer exists.
 - No checkbox syntax (`- [ ]`): GitHub, Obsidian and task apps would read the nodes as to-dos.
 - Objections and debates don't go in the tree.
+- Questions, answers and reasons follow the learner's language. The grammar's keywords (the states,
+  the types, the marks, `alias`, `depends`, `reason`, `Goal`, `Sources`, `Started`, `Grammar`) stay
+  in English.
 
 ## Rules
 
 1. **Mapping.** Each key concept becomes a child of the root, with its mark. Check the siblings:
    overlap becomes a merge or a `depends:` edge; a gap becomes a new node.
 2. **New prerequisite.** A prerequisite the learner doesn't master that comes up in the middle of a
-   node becomes an OPEN child. Either of you may create it.
+   node, or a concept the learner flags, becomes an OPEN child. Either of you may create it. When it
+   has to be answered before the node can go on, it takes the FOCUS, and the node it came from goes
+   back to OPEN until the focus returns to it.
 3. **Closing a parent.** A parent closes only when every child is CLOSED or DEFERRED.
 4. **Moving up.** When the FOCUS closes or is deferred, the focus moves to the parent (depth-first).
+   When a top-level node closes, the focus moves to the next OPEN top-level node; when none is left,
+   the session ends with the Feynman (rule 9).
 5. **Full parent.** When the focus moves up, present the parent again in full: its explanation and its
    pending verification question, rewritten in the current message. Never repeat only the question and
-   never send the learner "back up". They read the parent before they had the child's piece, so that
+   never ask the learner to scroll back to the earlier message. They read the parent before they had
+   the child's piece, so that
    reading no longer counts. If the child changed how the parent should be understood, rewrite the
    parent with it.
 6. **Stop rule.** Every concept has prerequisites all the way down to arithmetic; without a brake,
@@ -90,7 +104,7 @@ One line per node:
 7. **You keep the file.** Update it on every state change, without asking. It is a record of the
    protocol, not learning content.
 8. **Resume.** When a topic is reopened, read the tree before any mapping and propose resuming from the
-   OPEN and DEFERRED nodes.
+   FOCUS node, if there is one, then from the OPEN and DEFERRED nodes.
 9. **Root.** The root closes with the final Feynman: append ` → <the learner's explanation in one
    line> (date)` to the `Goal:` line.
 

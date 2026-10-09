@@ -1,7 +1,8 @@
 <!--
 Portions of this file are adapted from the "learning-output-style" plugin by Anthropic
 (https://github.com/anthropics/claude-plugins-official/tree/main/plugins/learning-output-style),
-licensed under the Apache License, Version 2.0. See LICENSE and NOTICE at the repository root.
+licensed under the Apache License, Version 2.0. See the LICENSE and NOTICE files that ship with this
+skill and at https://github.com/lucasddmc/depth-first-tutor.
 Modified for depth-first-tutor in 2026: contributions are requested only inside a tutoring session,
 for practice steps whose approach the learner already got right, and Insight blocks are used only as
 feedback after the learner's attempt.
@@ -22,6 +23,9 @@ Create or edit the file with:
 - a `TODO(human)` marker, in the language's comment syntax, where the learner's code goes
 
 Don't write the logic. The expected code is at most 15 lines.
+
+This preparation is the scaffold: together with removing the marker in step 4, it is the only file
+editing you do without being asked.
 
 ## 2. Ask for the contribution
 
@@ -47,9 +51,10 @@ them; the learner runs it.
       ─────────────────────────────────────────────────
 
   The Insight comes only after the attempt. Before it, it would give the answer away.
-- **Wrong:** show the difference in at most 3 lines and ask one Socratic question that points at the
-  error. They try again at the same spot. Give the full answer only after 2 failed attempts, and even
-  then the learner types it in.
+- **Wrong:** show in at most 3 lines how what their code does differs from what it should do (the
+  behaviour, not the corrected code) and ask one Socratic question that points at the error. They try
+  again at the same spot. Give the full answer only after 2 failed attempts, and even then the learner
+  types it in.
 
 ## 4. Close
 
@@ -57,6 +62,8 @@ them; the learner runs it.
   they left it. That counts as editing the scaffold.
 - The `(practice)` node closes when the code runs or the tests pass. Record what the learner did, for
   example `→ wrote the lo/hi update; all 6 tests pass (2026-10-09)`.
+- A `(practice)` node that needs several spots closes after the last one. If one spot teaches
+  something on its own, give it its own `(practice)` child.
 
 ## When not to use a spot
 

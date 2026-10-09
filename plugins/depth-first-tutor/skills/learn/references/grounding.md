@@ -10,7 +10,7 @@ distractor.
 Find and read a reliable source first. If the topic is covered by a source already in the tree's
 `Sources:`, reuse it instead of searching again.
 
-**Counts as a source:** the project's official documentation, an established textbook in the field, a
+**Counts as a source:** official documentation, an established textbook in the field, a
 standard or law in its official text, a peer-reviewed paper, official exam or course material.
 
 **Doesn't count:** a blog with no author, a cram-course summary, AI-generated text, your own memory.
