@@ -227,6 +227,23 @@ def check_readme():
     check("README's relative links point at files that exist", not missing, ", ".join(missing))
 
 
+def check_opencode():
+    cmd = read(ROOT / ".opencode" / "commands" / "learn.md")
+    check(".opencode/commands/learn.md exists", cmd is not None)
+    if cmd is None:
+        return
+    check("learn.md has a description frontmatter",
+          re.match(r"^---\n(.*?\n)?description: .+\n", cmd, re.DOTALL) is not None)
+    check("learn.md forwards the topic via $ARGUMENTS", "$ARGUMENTS" in cmd)
+    check("learn.md names the learn skill", "`learn` skill" in cmd)
+    cfg = read(ROOT / "opencode.json") or read(ROOT / "opencode.jsonc") or ""
+    check("opencode.json(c) registers the skill path",
+          "plugins/depth-first-tutor/skills" in cfg)
+    skill = read(SKILL_MD) or ""
+    check("SKILL.md declares opencode compatibility",
+          re.search(r"^compatibility:.*opencode", skill, re.MULTILINE) is not None)
+
+
 def main():
     check_manifests()
     check_license()
@@ -234,6 +251,7 @@ def main():
     check_skill_frontmatter()
     check_trees()
     check_readme()
+    check_opencode()
     failed = results.count(False)
     print(f"\n{len(results) - failed}/{len(results)} checks passed")
     sys.exit(1 if failed else 0)
