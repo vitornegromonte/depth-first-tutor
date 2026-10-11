@@ -11,7 +11,7 @@ choice).
 ## Where the file lives
 
 1. If the learner attached a tree file, that file is the tree: resume from it and keep updating it.
-2. If the user's CLAUDE.md or AGENTS.md has a line like `depth-first-tutor trees: <path>`, use that
+2. If the user's AGENTS.md or CLAUDE.md has a line like `depth-first-tutor trees: <path>`, use that
    folder.
 3. Otherwise use `learning-trees/` in the current working directory.
 4. One file per topic, named `<topic-slug>.md` in kebab-case (`binary-search.md`).

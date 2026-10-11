@@ -72,8 +72,7 @@ Claude Code and claude.ai.
 ## Where trees are saved
 
 By default, in `learning-trees/` inside the folder you're working in. To keep them all in one place,
-add a line to `~/.claude/CLAUDE.md` or to the project's CLAUDE.md (AGENTS.md for agents that read
-that file instead):
+add a line to the project's AGENTS.md (or `~/.claude/CLAUDE.md` for Claude):
 
 ```
 depth-first-tutor trees: ~/notes/learning-trees
