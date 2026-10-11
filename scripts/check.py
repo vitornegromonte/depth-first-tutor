@@ -53,9 +53,13 @@ def check_forbidden(text):
     if re.search(r'\bvault\b', text_lower):
         hits.append("vault")
     # Substring matches for the rest
-    for word in ["wiki/", "mcp__", "show_widget", "senduserfile", "$arguments"]:
+    for word in ["wiki/", "mcp__", "show_widget", "senduserfile"]:
         if word.lower() in text_lower:
             hits.append(word)
+    # Case-sensitive: lowercase $arguments is a Claude leftover, uppercase
+    # $ARGUMENTS is the OpenCode command placeholder and is legitimate.
+    if "$arguments" in text:
+        hits.append("$arguments")
     return hits
 
 
@@ -139,6 +143,16 @@ def check_skill_files():
         check("README.md: no leftovers from the private version", not hits, ", ".join(hits))
         pt = sorted(set(PORTUGUESE.findall(text)))
         check("README.md: English only", not pt, ", ".join(pt))
+
+    # Check .opencode/commands/*.md
+    for path in sorted((ROOT / ".opencode" / "commands").glob("*.md")) if (ROOT / ".opencode" / "commands").is_dir() else []:
+        text = path.read_text(encoding="utf-8")
+        rel = path.relative_to(ROOT)
+        hits = check_forbidden(text)
+        check(f"{rel}: no leftovers from the private version", not hits, ", ".join(hits))
+        check(f"{rel}: no checkbox syntax", CHECKBOX.search(text) is None)
+        pt = sorted(set(PORTUGUESE.findall(text)))
+        check(f"{rel}: English only", not pt, ", ".join(pt))
 
     # Check examples/*.md
     for path in sorted((ROOT / "examples").glob("*.md")) if (ROOT / "examples").is_dir() else []:
